@@ -24,13 +24,20 @@ out vec3 ToCameraVector; // Vector from Vertex to Camera;
 void main()
 {
 
-    // get texture value, compute height
+    // get texture color value, compute height
+    vec4 texture_color = texture2D(rgbTexture, textureCoordinate);
+    float y = heightFactor*(0.2126*texture_color.r + 0.7152*texture_color.g + 0.0722*texture_color.b);
+
     // compute normal vector using also the heights of neighbor vertices
+    //vertexNormal
 
     // compute toLight vector vertex coordinate in VCS
+    vec3 lightPosition = vec3(widthTexture/2, widthTexture+heightTexture, heightTexture/2);
+    ToLightVector = normalize(lightPosition-vec3(gl_Position));
+
    
    // set gl_Position variable correctly to give the transformed vertex position
 
-   gl_Position = vec4(0,0,0,0); // this is a placeholder. It does not correctly set the position 
+   gl_Position = vec4(textureCoordinate.x, y, textureCoordinate.y,0); // this is a placeholder. It does not correctly set the position 
     
 }
