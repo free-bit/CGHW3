@@ -20,6 +20,8 @@ int widthTexture, heightTexture;
 // Uniform variable
 float heightFactor=10.0;
 
+unsigned int EBO;
+
 static void errorCallback(int error,
   const char * description) {
   fprintf(stderr, "Error: %s\n", description);
@@ -32,6 +34,31 @@ void incrHeightFactor(){
 void decrHeightFactor(){
   heightFactor-=0.5;
   glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
+}
+void generateHeightMap(float* vertices, unsigned int* indices){
+  int index=0;
+  for(int i=0; i<heightTexture; i++){
+    for(int j=0; j<widthTexture; j++){
+      indices[index++]=i*(widthTexture+1)+j;
+      cout<<indices[index-1]<<" ";
+
+      indices[index++]=(i+1)*(widthTexture+1)+j;
+      cout<<indices[index-1]<<" ";
+
+      indices[index++]=i*(widthTexture+1)+j+1;
+      cout<<indices[index-1]<<endl;
+
+      indices[index++]=i*(widthTexture+1)+j+1;
+      cout<<indices[index-1]<<" ";
+
+      indices[index++]=(i+1)*(widthTexture+1)+j;
+      cout<<indices[index-1]<<" ";
+
+      indices[index++]=(i+1)*(widthTexture+1)+j+1;
+      cout<<indices[index-1]<<endl<<endl;
+    }
+  }
+  cout<<index<<endl;
 }
 
 //Added
@@ -100,6 +127,7 @@ int main(int argc, char * argv[]) {
   }
   glfwMakeContextCurrent(win);
 
+
   //Added
   glfwSetKeyCallback(win, keyCallback);
 
@@ -119,6 +147,13 @@ int main(int argc, char * argv[]) {
   //glUniform1i(glGetUniformLocation(idProgramShader, "texturemap"), 0);
 
   initTexture(argv[1], & widthTexture, & heightTexture);
+  float *vertices=new float[(widthTexture+1)*(heightTexture+1)*3];
+  unsigned int *indices=new unsigned int[widthTexture*heightTexture*6];
+  generateHeightMap(vertices, indices);
+
+  //glGenBuffers(1, &EBO);
+  //glBindBuffer(GL_ARRAY_BUFFER, EBO);
+  //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
   while (!glfwWindowShouldClose(win)) {
     glfwSwapBuffers(win);
@@ -127,6 +162,7 @@ int main(int argc, char * argv[]) {
 
   glfwDestroyWindow(win);
   glfwTerminate();
-
+  delete [] vertices;
+  delete [] indices;
   return 0;
 }

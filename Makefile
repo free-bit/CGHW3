@@ -2,4 +2,6 @@ FLAGS=-lXi -lGLEW -lGLU -lm -lGL -lm -lpthread -ldl -ldrm -lXdamage -lX11-xcb -l
 GLM=-I ./glm
 all:
 	g++ *.cpp -o main -std=c++11 $(FLAGS) $(GLM)
+debug:
+	g++ *.cpp -o main -std=c++11 $(FLAGS) $(GLM) -g
 
