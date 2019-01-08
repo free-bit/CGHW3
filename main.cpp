@@ -112,6 +112,7 @@ int main(int argc, char * argv[]) {
   }
 
   initShaders();
+  glEnable(GL_TEXTURE_2D);
   glUseProgram(idProgramShader);
   //Added
   //glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp);
