@@ -23,14 +23,6 @@ out vec3 ToCameraVector; // Vector from Vertex to Camera;
 
 void main()
 {
-    float diff;
-    if (widthTexture > heightTexture) {
-        diff=2/widthTexture;
-    }
-    else {
-        diff=2/heightTexture;
-    }
-
     textureCoordinate = vec2 (position.x, position.z);
 
     // get texture color value, compute height
@@ -44,18 +36,18 @@ void main()
     if(position.x==-1 && position.z==-1){
         //3th
         neigh3.x=position.x;
-        neigh3.z=position.z+diff;
+        neigh3.z=position.z+1;
         color = texture2D(rgbTexture, vec2(neigh3.x, neigh3.z));
         neigh3.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //4th
-        neigh4.x=position.x+diff;
-        neigh4.z=position.z+diff;
+        neigh4.x=position.x+1;
+        neigh4.z=position.z+1;
         color = texture2D(rgbTexture, vec2(neigh4.x, neigh4.z));
         neigh4.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //5th
-        neigh5.x=position.x+diff;
+        neigh5.x=position.x+1;
         neigh5.z=position.z;
         color = texture2D(rgbTexture, vec2(neigh5.x, neigh5.z));
         neigh5.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
@@ -68,12 +60,12 @@ void main()
     //Top-left: 0,5
     else if(position.x==-1 && position.z==1){
         //0th
-        neigh0 = vec3(position.x, 0, position.z-diff);
+        neigh0 = vec3(position.x, 0, position.z-1);
         vec4 color = texture2D(rgbTexture, vec2(neigh0.x, neigh0.z));
         neigh0.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //5th
-        neigh5.x=position.x+diff;
+        neigh5.x=position.x+1;
         neigh5.z=position.z;
         color = texture2D(rgbTexture, vec2(neigh5.x, neigh5.z));
         neigh5.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
@@ -84,18 +76,18 @@ void main()
     //Top-right: 0,1,2
     else if(position.x==1 && position.z==1){
         //0th
-        neigh0 = vec3(position.x, 0, position.z-diff);
+        neigh0 = vec3(position.x, 0, position.z-1);
         vec4 color = texture2D(rgbTexture, vec2(neigh0.x, neigh0.z));
         neigh0.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //1th
-        neigh1.x=position.x-diff;
-        neigh1.z=position.z-diff;
+        neigh1.x=position.x-1;
+        neigh1.z=position.z-1;
         color = texture2D(rgbTexture, vec2(neigh1.x, neigh1.z));
         neigh1.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //2th
-        neigh2.x=position.x-diff;
+        neigh2.x=position.x-1;
         neigh2.z=position.z;
         color = texture2D(rgbTexture, vec2(neigh2.x, neigh2.z));
         neigh2.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
@@ -109,14 +101,14 @@ void main()
     //Bottom-right: 2,3
     else if(position.x==1 && position.y==-1){
         //2th
-        neigh2.x=position.x-diff;
+        neigh2.x=position.x-1;
         neigh2.z=position.z;
         color = texture2D(rgbTexture, vec2(neigh2.x, neigh2.z));
         neigh2.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //3th
         neigh3.x=position.x;
-        neigh3.z=position.z+diff;
+        neigh3.z=position.z+1;
         color = texture2D(rgbTexture, vec2(neigh3.x, neigh3.z));
         neigh3.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -125,36 +117,36 @@ void main()
     }
     else{
         //0th
-        neigh0 = vec3(position.x, 0, position.z-diff);
+        neigh0 = vec3(position.x, 0, position.z-1);
         color = texture2D(rgbTexture, vec2(neigh0.x, neigh0.z));
         neigh0.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //1th
-        neigh1.x=position.x-diff;
-        neigh1.z=position.z-diff;
+        neigh1.x=position.x-1;
+        neigh1.z=position.z-1;
         color = texture2D(rgbTexture, vec2(neigh1.x, neigh1.z));
         neigh1.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //2th
-        neigh2.x=position.x-diff;
+        neigh2.x=position.x-1;
         neigh2.z=position.z;
         color = texture2D(rgbTexture, vec2(neigh2.x, neigh2.z));
         neigh2.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //3th
         neigh3.x=position.x;
-        neigh3.z=position.z+diff;
+        neigh3.z=position.z+1;
         color = texture2D(rgbTexture, vec2(neigh3.x, neigh3.z));
         neigh3.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //4th
-        neigh4.x=position.x+diff;
-        neigh4.z=position.z+diff;
+        neigh4.x=position.x+1;
+        neigh4.z=position.z+1;
         color = texture2D(rgbTexture, vec2(neigh4.x, neigh4.z));
         neigh4.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //5th
-        neigh5.x=position.x+diff;
+        neigh5.x=position.x+1;
         neigh5.z=position.z;
         color = texture2D(rgbTexture, vec2(neigh5.x, neigh5.z));
         neigh5.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
@@ -169,7 +161,7 @@ void main()
         vertexNormal=(normal0+normal1+normal2+normal3+normal4+normal5)/6;
     }
     // compute toLight vector vertex coordinate in VCS
-    ToLightVector = normalize(vec3 (- position.x, 1, - position.z));
+    ToLightVector = normalize(vec3 (widthTexture / 2 - position.x, widthTexture + heightTexture - y, heightTexture / 2 - position.z));
 
     // compute toCamera vector vertex coordinate in VCS
     ToCameraVector = normalize(vec3 (cameraPosition.x - position.x, cameraPosition.y - y, cameraPosition.z - position.z));

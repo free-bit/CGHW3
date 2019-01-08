@@ -19,6 +19,7 @@ int widthTexture, heightTexture;
 
 // Uniform variable
 float heightFactor=10.0;
+vec4 cameraPosition;
 
 unsigned int EBO;
 
@@ -37,28 +38,35 @@ void decrHeightFactor(){
 }
 void generateHeightMap(float* vertices, unsigned int* indices){
   int index=0;
+  int vindex=0;
+
   for(int i=0; i<heightTexture; i++){
     for(int j=0; j<widthTexture; j++){
+      // fill in the vertices array
+      vertices[vindex++] = j;   // x
+      vertices[vindex++] = 0;   // y
+      vertices[vindex++] = i;   // z
+
       indices[index++]=i*(widthTexture+1)+j;
-      cout<<indices[index-1]<<" ";
+      // cout<<indices[index-1]<<" ";
 
       indices[index++]=(i+1)*(widthTexture+1)+j;
-      cout<<indices[index-1]<<" ";
+      // cout<<indices[index-1]<<" ";
 
       indices[index++]=i*(widthTexture+1)+j+1;
-      cout<<indices[index-1]<<endl;
+      // cout<<indices[index-1]<<endl;
 
       indices[index++]=i*(widthTexture+1)+j+1;
-      cout<<indices[index-1]<<" ";
+      // cout<<indices[index-1]<<" ";
 
       indices[index++]=(i+1)*(widthTexture+1)+j;
-      cout<<indices[index-1]<<" ";
+      // cout<<indices[index-1]<<" ";
 
       indices[index++]=(i+1)*(widthTexture+1)+j+1;
-      cout<<indices[index-1]<<endl<<endl;
+      // cout<<indices[index-1]<<endl<<endl;
     }
   }
-  cout<<index<<endl;
+  // cout<<index<<endl;
 }
 
 //Added
@@ -142,27 +150,39 @@ int main(int argc, char * argv[]) {
   initShaders();
   glEnable(GL_TEXTURE_2D);
   glUseProgram(idProgramShader);
-  //Added
-  //glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp);
-  //glUniform1i(glGetUniformLocation(idProgramShader, "texturemap"), 0);
 
   initTexture(argv[1], & widthTexture, & heightTexture);
+
+  cameraPosition = vec4(widthTexture / 2, widthTexture / 10, - widthTexture / 4, 1);
+
+  glUniform4fv(glGetUniformLocation(idProgramShader, "cameraPosition"), 1, value_ptr(cameraPosition));
+  glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
+  glUniform1f(glGetUniformLocation(idProgramShader, "widthTexture"), widthTexture);
+  glUniform1f(glGetUniformLocation(idProgramShader, "heightTexture"), heightTexture);
+
+  glUniform1i(glGetUniformLocation(idProgramShader, "rgbTexture"), 0);
+
   float *vertices=new float[(widthTexture+1)*(heightTexture+1)*3];
   unsigned int *indices=new unsigned int[widthTexture*heightTexture*6];
   generateHeightMap(vertices, indices);
 
-  //glGenBuffers(1, &EBO);
-  //glBindBuffer(GL_ARRAY_BUFFER, EBO);
-  //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glGenBuffers(1, &EBO);
+  glBindBuffer(GL_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  delete [] vertices;
+  delete [] indices;
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
 
   while (!glfwWindowShouldClose(win)) {
+    glDrawArrays(GL_TRIANGLES, 0, (widthTexture+1)*(heightTexture+1)*3);
     glfwSwapBuffers(win);
     glfwPollEvents();
   }
 
   glfwDestroyWindow(win);
   glfwTerminate();
-  delete [] vertices;
-  delete [] indices;
   return 0;
 }
