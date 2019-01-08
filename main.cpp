@@ -173,10 +173,28 @@ int main(int argc, char * argv[]) {
   delete [] vertices;
   delete [] indices;
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
   while (!glfwWindowShouldClose(win)) {
+    float ratio;
+    int width, height;
+    glfwGetFramebufferSize(win, &width, &height);
+    ratio = width / (float) height;
+
+    mat4 mvp = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
+        cameraPosition.x, cameraPosition.y, cameraPosition.z + 1,
+        0, 1, 0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // glUniformMatrix4fv(glGetUniformLocation(idProgramShader, "MVP"), 1, GL_FALSE, value_ptr(mvp));
     glDrawArrays(GL_TRIANGLES, 0, (widthTexture+1)*(heightTexture+1)*3);
     glfwSwapBuffers(win);
     glfwPollEvents();

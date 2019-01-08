@@ -33,7 +33,7 @@ void main()
     vec4 color;
 
     //Bottom-left: 3,4,5
-    if(position.x==-1 && position.z==-1){
+    if(position.x==0 && position.z==0){
         //3th
         neigh3.x=position.x;
         neigh3.z=position.z+1;
@@ -58,7 +58,7 @@ void main()
         vertexNormal=(normal3+normal4)/2;
     }
     //Top-left: 0,5
-    else if(position.x==-1 && position.z==1){
+    else if(position.x==0 && position.z==heightTexture){
         //0th
         neigh0 = vec3(position.x, 0, position.z-1);
         vec4 color = texture2D(rgbTexture, vec2(neigh0.x, neigh0.z));
@@ -74,7 +74,7 @@ void main()
         vertexNormal=normalize(cross(neigh0-position, neigh5-position));
     }
     //Top-right: 0,1,2
-    else if(position.x==1 && position.z==1){
+    else if(position.x==widthTexture && position.z==heightTexture){
         //0th
         neigh0 = vec3(position.x, 0, position.z-1);
         vec4 color = texture2D(rgbTexture, vec2(neigh0.x, neigh0.z));
@@ -99,7 +99,7 @@ void main()
 
     }
     //Bottom-right: 2,3
-    else if(position.x==1 && position.y==-1){
+    else if(position.x==widthTexture && position.y==0){
         //2th
         neigh2.x=position.x-1;
         neigh2.z=position.z;
