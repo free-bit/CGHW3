@@ -21,8 +21,6 @@ int widthTexture, heightTexture;
 float heightFactor=10.0;
 vec4 cameraPosition;
 
-unsigned int EBO;
-
 static void errorCallback(int error,
   const char * description) {
   fprintf(stderr, "Error: %s\n", description);
@@ -153,7 +151,7 @@ int main(int argc, char * argv[]) {
 
   initTexture(argv[1], & widthTexture, & heightTexture);
 
-  cameraPosition = vec4(widthTexture / 2, widthTexture / 10, - widthTexture / 4, 1);
+  cameraPosition = vec4((float)widthTexture / 2, (float)widthTexture / 10, - (float)widthTexture / 4, 1.0f);
 
   glUniform4fv(glGetUniformLocation(idProgramShader, "cameraPosition"), 1, value_ptr(cameraPosition));
   glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
@@ -166,15 +164,21 @@ int main(int argc, char * argv[]) {
   unsigned int *indices=new unsigned int[widthTexture*heightTexture*6];
   generateHeightMap(vertices, indices);
 
+  unsigned int VBO, EBO;
+  glGenBuffers(1, &VBO);
   glGenBuffers(1, &EBO);
-  glBindBuffer(GL_ARRAY_BUFFER, EBO);
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  delete [] vertices;
-  delete [] indices;
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
+
+  delete [] vertices;
+  delete [] indices;
 
   while (!glfwWindowShouldClose(win)) {
     float ratio;
@@ -182,20 +186,26 @@ int main(int argc, char * argv[]) {
     glfwGetFramebufferSize(win, &width, &height);
     ratio = width / (float) height;
 
-    mat4 mvp = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+    mat4 proj = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-        cameraPosition.x, cameraPosition.y, cameraPosition.z + 1,
-        0, 1, 0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+
+    vec3 d = vec3(cameraPosition);
+    d.z = d.z + 1;
+    vec3 up = vec3(0.0f, 1.0f, 0.0f);
+    mat4 view = lookAt(vec3(cameraPosition), d, up);
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
+//        cameraPosition.x, cameraPosition.y, cameraPosition.z + 1,
+//        0, 1, 0);
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
+//    gluPerspective(radians(45.0f), ratio, 0.1f, 1000.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // glUniformMatrix4fv(glGetUniformLocation(idProgramShader, "MVP"), 1, GL_FALSE, value_ptr(mvp));
-    glDrawArrays(GL_TRIANGLES, 0, (widthTexture+1)*(heightTexture+1)*3);
+    mat4 mvp = proj * view;
+    glUniformMatrix4fv(glGetUniformLocation(idProgramShader, "MVP"), 1, GL_FALSE, value_ptr(mvp));
+    glDrawElements(GL_TRIANGLES, (widthTexture+1)*(heightTexture+1)*3, GL_UNSIGNED_INT, 0);
     glfwSwapBuffers(win);
     glfwPollEvents();
   }
