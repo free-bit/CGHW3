@@ -8,6 +8,10 @@ using namespace glm;
 
 static GLFWwindow * win = NULL;
 
+bool toggleFS=true;
+int windowLastWidth;
+int windowLastHeight;
+
 // Shaders
 GLuint idProgramShader;
 GLuint idFragmentShader;
@@ -33,6 +37,19 @@ void incrHeightFactor(){
 void decrHeightFactor(){
   heightFactor-=0.5;
   glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
+}
+void toggleFullscreen(){
+  if(toggleFS){
+   glfwGetWindowSize(win, &windowLastWidth, &windowLastHeight);
+   GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+   const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+   glfwSetWindowMonitor(win, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+   //glfwSetWindowMonitor(window, NULL, xpos, ypos, width, height, 0);
+  }
+  else{
+    glfwSetWindowMonitor(win, NULL, 0, 0, windowLastWidth, windowLastHeight, 0);
+  }
+  toggleFS=!toggleFS;
 }
 void generateHeightMap(float* vertices, unsigned int* indices){
   int index=0;
@@ -115,6 +132,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         break;
       /*F for fullscreen*/
       case GLFW_KEY_F:
+        if(action == GLFW_PRESS)
+          toggleFullscreen();
         break;
       case GLFW_KEY_ESCAPE:
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -222,3 +241,7 @@ int main(int argc, char * argv[]) {
   glfwTerminate();
   return 0;
 }
+//glfwGetWindowPos
+//When the window size has changed, then the viewport has to be suited to the window size (glViewport). This can be done in the main loop of the application:
+//If the current window is in full screen mode, can be achieved by asking for the monitor that the window uses for full screen mode (glfwGetWindowMonitor):
+//To switch the full screen mode on and off, glfwSetWindowMonitor has to be called, either with the monitor for the full screen mode, or with nullptr:
