@@ -37,34 +37,51 @@ void decrHeightFactor(){
 void generateHeightMap(float* vertices, unsigned int* indices){
   int index=0;
   int vindex=0;
-
-  for(int i=0; i<heightTexture; i++){
-    for(int j=0; j<widthTexture; j++){
+  int i;
+  for(i=0; i<heightTexture; i++){
+    int j;
+    for(j=0; j<widthTexture; j++){
       // fill in the vertices array
       vertices[vindex++] = j;   // x
+      //cout<<vertices[vindex-1]<<" ";
       vertices[vindex++] = 0;   // y
+      //cout<<vertices[vindex-1]<<" ";
       vertices[vindex++] = i;   // z
+      //cout<<vertices[vindex-1]<<endl<<endl;
 
-      indices[index++]=i*(widthTexture+1)+j;
-      // cout<<indices[index-1]<<" ";
-
-      indices[index++]=(i+1)*(widthTexture+1)+j;
-      // cout<<indices[index-1]<<" ";
-
-      indices[index++]=i*(widthTexture+1)+j+1;
-      // cout<<indices[index-1]<<endl;
-
-      indices[index++]=i*(widthTexture+1)+j+1;
-      // cout<<indices[index-1]<<" ";
-
-      indices[index++]=(i+1)*(widthTexture+1)+j;
-      // cout<<indices[index-1]<<" ";
-
-      indices[index++]=(i+1)*(widthTexture+1)+j+1;
-      // cout<<indices[index-1]<<endl<<endl;
+      indices[index++]=i*(widthTexture+1)+j;//First
+      //cout<<indices[index-1]<<" ";
+      indices[index++]=(i+1)*(widthTexture+1)+j+1;//Second
+      //cout<<indices[index-1]<<" ";
+      indices[index++]=(i+1)*(widthTexture+1)+j;//Third
+      //cout<<indices[index-1]<<endl;
+      indices[index++]=i*(widthTexture+1)+j;//Fourth
+      //cout<<indices[index-1]<<" ";
+      indices[index++]=i*(widthTexture+1)+j+1;//Fifth
+      //cout<<indices[index-1]<<" ";
+      indices[index++]=(i+1)*(widthTexture+1)+j+1;//Sixth
+      //cout<<indices[index-1]<<endl<<endl;
     }
+    // fill in the vertices array
+    vertices[vindex++] = j;   // x
+    //cout<<vertices[vindex-1]<<" ";
+    vertices[vindex++] = 0;   // y
+    //cout<<vertices[vindex-1]<<" ";
+    vertices[vindex++] = i;   // z
+    //cout<<vertices[vindex-1]<<endl<<endl;
   }
-  // cout<<index<<endl;
+  //Final iteration for vertices:
+  for(int j=0; j<=widthTexture; j++){
+    // fill in the vertices array
+    vertices[vindex++] = j;   // x
+    //cout<<vertices[vindex-1]<<" ";
+    vertices[vindex++] = 0;   // y
+    //cout<<vertices[vindex-1]<<" ";
+    vertices[vindex++] = i;   // z
+    //cout<<vertices[vindex-1]<<endl<<endl;
+  }
+  //cout<<"Number of vertices*3: "<<vindex<<endl;
+  //cout<<"Number of indices: "<<index<<endl;
 }
 
 //Added
@@ -160,8 +177,8 @@ int main(int argc, char * argv[]) {
 
   glUniform1i(glGetUniformLocation(idProgramShader, "rgbTexture"), 0);
 
-  float *vertices=new float[(widthTexture+1)*(heightTexture+1)*3];
-  unsigned int *indices=new unsigned int[widthTexture*heightTexture*6];
+  float *vertices=new float[(widthTexture+1)*(heightTexture+1)*3];//OK
+  unsigned int *indices=new unsigned int[widthTexture*heightTexture*6];//OK
   generateHeightMap(vertices, indices);
 
   unsigned int VBO, EBO;
@@ -176,9 +193,10 @@ int main(int argc, char * argv[]) {
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-  delete [] vertices;
-  delete [] indices;
+  //delete [] vertices;
+  //delete [] indices;
 
   while (!glfwWindowShouldClose(win)) {
     float ratio;
@@ -189,23 +207,13 @@ int main(int argc, char * argv[]) {
     mat4 proj = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
 
-    vec3 d = vec3(cameraPosition);
-    d.z = d.z + 1;
-    vec3 up = vec3(0.0f, 1.0f, 0.0f);
-    mat4 view = lookAt(vec3(cameraPosition), d, up);
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-//        cameraPosition.x, cameraPosition.y, cameraPosition.z + 1,
-//        0, 1, 0);
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    gluPerspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+    //From camera look at the center of the texture with up vector in the direction of y
+    mat4 view = lookAt(vec3(cameraPosition), vec3(widthTexture/2,0,heightTexture/2), vec3(0.0f, 1.0f, 0.0f));
     glClear(GL_COLOR_BUFFER_BIT);
 
     mat4 mvp = proj * view;
     glUniformMatrix4fv(glGetUniformLocation(idProgramShader, "MVP"), 1, GL_FALSE, value_ptr(mvp));
-    glDrawElements(GL_TRIANGLES, (widthTexture+1)*(heightTexture+1)*3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, widthTexture*heightTexture*6, GL_UNSIGNED_INT, 0);
     glfwSwapBuffers(win);
     glfwPollEvents();
   }

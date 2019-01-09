@@ -168,6 +168,6 @@ void main()
    
    // set gl_Position variable correctly to give the transformed vertex position
 
-   gl_Position = MVP * vec4(position.x, y, position.z, 1);
+   gl_Position = MVP * vec4(position.x, position.y, position.z, 1);
 
 }
