@@ -89,7 +89,6 @@ void generateHeightMap(float* vertices, unsigned int* indices){
 //Added
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-  if(action == GLFW_PRESS){
     switch(key) 
     {
       /*W, S for pitch change*/
@@ -124,7 +123,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
       default:
         break;
       }
-    }
 }
 
 int main(int argc, char * argv[]) {
@@ -195,7 +193,7 @@ int main(int argc, char * argv[]) {
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
   delete [] vertices;
   delete [] indices;

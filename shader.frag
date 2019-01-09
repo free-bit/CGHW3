@@ -33,10 +33,10 @@ void main() {
     vec4 ks = vec4(1.0, 1.0, 1.0, 1.0); // reflectance coeff. for specular
     int specExp = 100; // specular exponent
 
-    vec3 halfVector = normalize(ToCameraVector + ToLightVector);
+    vec3 halfVector = normalize(normalize(ToCameraVector) + normalize(ToLightVector));
 
-	float NdotL = dot(vertexNormal, ToLightVector); // for diffuse component
-	float NdotH = dot(vertexNormal, halfVector);    // for specular component
+	float NdotL = dot(normalize(vertexNormal), normalize(ToLightVector)); // for diffuse component
+	float NdotH = dot(normalize(vertexNormal), halfVector);    // for specular component
 
     // compute diffuse component
 	vec4 diffuse = Id * kd * max(0, NdotL);
