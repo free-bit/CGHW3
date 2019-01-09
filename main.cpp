@@ -26,6 +26,10 @@ float speed=0;
 float heightFactor=10.0;
 vec4 cameraPosition;
 vec4 gaze;
+float pitch_ = 0;
+float yaw_ = 0;
+
+float matpi = pi<float>();
 
 static void errorCallback(int error,
   const char * description) {
@@ -110,15 +114,19 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 {
     switch(key) 
     {
-      /*W, S for pitch change*/
+      /*W, S for pitch_ change*/
       case GLFW_KEY_W:
+        pitch_ += 1 * matpi / 180;
         break;
       case GLFW_KEY_S:
+        pitch_ -= 1 * matpi / 180;
         break;
       /*A, D for yaw change*/
       case GLFW_KEY_A:
+        yaw_ += 1 * matpi / 180;
         break;
       case GLFW_KEY_D:
+        yaw_ -= 1 * matpi / 180;
         break;
       /*O, L for height change*/
       case GLFW_KEY_O:
@@ -194,8 +202,8 @@ int main(int argc, char * argv[]) {
   initTexture(argv[1], & widthTexture, & heightTexture);
 
   cameraPosition = vec4((float)widthTexture / 2, (float)widthTexture / 10, - (float)widthTexture / 4, 1.0f);
-  gaze = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
+  gaze = vec4(yaw_, pitch_, 1.0f, 0.0f);
 
   glUniform4fv(glGetUniformLocation(idProgramShader, "cameraPosition"), 1, value_ptr(cameraPosition));
   glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
@@ -233,6 +241,11 @@ int main(int argc, char * argv[]) {
 
     mat4 proj = perspective(radians(57.5f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
+
+    mat4x4 I = mat4x4(1.0f);
+    mat4x4 roty = rotate(I, yaw_, vec3 (0.0f, 1.0f, 0.0f));
+    mat4x4 rotx = rotate(I, pitch_, vec3 (1.0f, 0.0f, 0.0f));
+    gaze = roty * rotx * vec4 (0.0f, 0.0f, 0.1f, 0.0f);;
     cameraPosition+=gaze*speed;
     //From camera look in the direction of gaze vector with up vector in the direction of y
     mat4 view = lookAt(vec3(cameraPosition), vec3(cameraPosition+gaze), vec3(0.0f, 1.0f, 0.0f));
