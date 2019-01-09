@@ -23,8 +23,8 @@ out vec2 textureCoordinate; // For texture-color
 
 void main()
 {
-	float u=position.x/widthTexture;
-	float v=position.z/heightTexture;
+	float u=(widthTexture-position.x)/widthTexture;
+	float v=(heightTexture-position.z)/heightTexture;
     textureCoordinate = vec2 (u, v);
     /*
     // get texture color value, compute height

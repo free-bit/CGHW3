@@ -43,24 +43,26 @@ void generateHeightMap(float* vertices, unsigned int* indices){
     for(j=0; j<widthTexture; j++){
       // fill in the vertices array
       vertices[vindex++] = j;   // x
-      //cout<<vertices[vindex-1]<<" ";
       vertices[vindex++] = 0;   // y
-      //cout<<vertices[vindex-1]<<" ";
       vertices[vindex++] = i;   // z
-      //cout<<vertices[vindex-1]<<endl<<endl;
 
-      indices[index++]=i*(widthTexture+1)+j;//First
-      //cout<<indices[index-1]<<" ";
-      indices[index++]=(i+1)*(widthTexture+1)+j+1;//Second
-      //cout<<indices[index-1]<<" ";
-      indices[index++]=(i+1)*(widthTexture+1)+j;//Third
-      //cout<<indices[index-1]<<endl;
-      indices[index++]=i*(widthTexture+1)+j;//Fourth
-      //cout<<indices[index-1]<<" ";
-      indices[index++]=i*(widthTexture+1)+j+1;//Fifth
-      //cout<<indices[index-1]<<" ";
-      indices[index++]=(i+1)*(widthTexture+1)+j+1;//Sixth
-      //cout<<indices[index-1]<<endl<<endl;
+      indices[index++]=i*(widthTexture+1)+j;
+      // cout<<indices[index-1]<<" ";
+
+      indices[index++]=(i+1)*(widthTexture+1)+j;
+      // cout<<indices[index-1]<<" ";
+
+      indices[index++]=i*(widthTexture+1)+j+1;
+      // cout<<indices[index-1]<<endl;
+
+      indices[index++]=i*(widthTexture+1)+j+1;
+      // cout<<indices[index-1]<<" ";
+
+      indices[index++]=(i+1)*(widthTexture+1)+j;
+      // cout<<indices[index-1]<<" ";
+
+      indices[index++]=(i+1)*(widthTexture+1)+j+1;
+      // cout<<indices[index-1]<<endl<<endl;
     }
     // fill in the vertices array
     vertices[vindex++] = j;   // x
@@ -193,7 +195,7 @@ int main(int argc, char * argv[]) {
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
   delete [] vertices;
   delete [] indices;
@@ -204,11 +206,11 @@ int main(int argc, char * argv[]) {
     glfwGetFramebufferSize(win, &width, &height);
     ratio = width / (float) height;
 
-    mat4 proj = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+    mat4 proj = perspective(radians(57.5f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
 
     //From camera look at the center of the texture with up vector in the direction of y
-    mat4 view = lookAt(vec3(cameraPosition), vec3(widthTexture/2,0,heightTexture/2), vec3(0.0f, 1.0f, 0.0f));
+    mat4 view = lookAt(vec3(cameraPosition), vec3(cameraPosition.x,cameraPosition.y,cameraPosition.z+1), vec3(0.0f, 1.0f, 0.0f));
     glClear(GL_COLOR_BUFFER_BIT);
 
     mat4 mvp = proj * view;
