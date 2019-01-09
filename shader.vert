@@ -153,12 +153,12 @@ void main()
         neigh5.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         // compute normal vector using also the heights of neighbor vertices
-        normal0=cross(neigh1-position, neigh0-position);
-        normal1=cross(neigh2-position, neigh1-position);
-        normal2=cross(neigh3-position, neigh2-position);
-        normal3=cross(neigh4-position, neigh3-position);
-        normal4=cross(neigh5-position, neigh4-position);
-        normal5=cross(neigh0-position, neigh5-position);
+        normal0=normalize(cross(neigh1-position, neigh0-position));
+        normal1=normalize(cross(neigh2-position, neigh1-position));
+        normal2=normalize(cross(neigh3-position, neigh2-position));
+        normal3=normalize(cross(neigh4-position, neigh3-position));
+        normal4=normalize(cross(neigh5-position, neigh4-position));
+        normal5=normalize(cross(neigh0-position, neigh5-position));
         vertexNormal=(normal0+normal1+normal2+normal3+normal4+normal5)/6;
     }
     // compute toLight vector vertex coordinate in VCS
