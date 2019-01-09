@@ -197,7 +197,7 @@ int main(int argc, char * argv[]) {
 
   delete [] vertices;
   delete [] indices;
-
+  glEnable(GL_DEPTH_TEST);
   while (!glfwWindowShouldClose(win)) {
     float ratio;
     int width, height;
@@ -209,7 +209,7 @@ int main(int argc, char * argv[]) {
 
     //From camera look at the center of the texture with up vector in the direction of y
     mat4 view = lookAt(vec3(cameraPosition), vec3(cameraPosition.x,cameraPosition.y,cameraPosition.z+1), vec3(0.0f, 1.0f, 0.0f));
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     mat4 mvp = proj * view;
     glUniformMatrix4fv(glGetUniformLocation(idProgramShader, "MVP"), 1, GL_FALSE, value_ptr(mvp));
