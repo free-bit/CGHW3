@@ -172,10 +172,10 @@ int main(int argc, char * argv[]) {
 
   glUniform4fv(glGetUniformLocation(idProgramShader, "cameraPosition"), 1, value_ptr(cameraPosition));
   glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
-  glUniform1f(glGetUniformLocation(idProgramShader, "widthTexture"), widthTexture);
-  glUniform1f(glGetUniformLocation(idProgramShader, "heightTexture"), heightTexture);
+  glUniform1i(glGetUniformLocation(idProgramShader, "widthTexture"), widthTexture);
+  glUniform1i(glGetUniformLocation(idProgramShader, "heightTexture"), heightTexture);
 
-  glUniform1i(glGetUniformLocation(idProgramShader, "rgbTexture"), 0);
+  //glUniform1i(glGetUniformLocation(idProgramShader, "rgbTexture"), 0);
 
   float *vertices=new float[(widthTexture+1)*(heightTexture+1)*3];//OK
   unsigned int *indices=new unsigned int[widthTexture*heightTexture*6];//OK
@@ -204,7 +204,7 @@ int main(int argc, char * argv[]) {
     glfwGetFramebufferSize(win, &width, &height);
     ratio = width / (float) height;
 
-    mat4 proj = perspective(radians(90.0f), ratio, 0.1f, 1000.0f);
+    mat4 proj = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
 
     //From camera look at the center of the texture with up vector in the direction of y

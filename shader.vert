@@ -16,17 +16,19 @@ uniform int heightTexture;
 
 // Output to Fragment Shader
 out vec2 textureCoordinate; // For texture-color
-out vec3 vertexNormal; // For Lighting computation
-out vec3 ToLightVector; // Vector from Vertex to Light;
-out vec3 ToCameraVector; // Vector from Vertex to Camera;
+//out vec3 vertexNormal; // For Lighting computation
+//out vec3 ToLightVector; // Vector from Vertex to Light;
+//out vec3 ToCameraVector; // Vector from Vertex to Camera;
 
 
 void main()
 {
-    textureCoordinate = vec2 (position.x, position.z);
-
+	float u=position.x/widthTexture;
+	float v=position.z/heightTexture;
+    textureCoordinate = vec2 (u, v);
+    /*
     // get texture color value, compute height
-    vec4 texture_color = texture2D(rgbTexture, textureCoordinate);
+    vec4 texture_color = texture(rgbTexture, textureCoordinate);
     float y = heightFactor*(0.2126*texture_color.r + 0.7152*texture_color.g + 0.0722*texture_color.b);
     vec3 neigh0, neigh1, neigh2, neigh3, neigh4, neigh5;
     vec3 normal0, normal1, normal2, normal3, normal4, normal5;
@@ -165,9 +167,9 @@ void main()
 
     // compute toCamera vector vertex coordinate in VCS
     ToCameraVector = normalize(vec3 (cameraPosition.x - position.x, cameraPosition.y - y, cameraPosition.z - position.z));
-   
+   */
    // set gl_Position variable correctly to give the transformed vertex position
 
-   gl_Position = MVP * vec4(position.x, y, position.z, 1);
+   gl_Position = MVP * vec4(position.x, position.y, position.z, 1);
 
 }
