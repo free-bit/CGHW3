@@ -37,13 +37,13 @@ void main()
     if(position.x==0 && position.z==0){
         //3th
         neigh3.x=position.x;
-        neigh3.z=position.z+1;
+        neigh3.z=position.z-1;
         color = texture(rgbTexture, vec2((widthTexture-neigh3.x)/widthTexture, (heightTexture-neigh3.z)/heightTexture));
         neigh3.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //4th
         neigh4.x=position.x+1;
-        neigh4.z=position.z+1;
+        neigh4.z=position.z-1;
         color = texture(rgbTexture, vec2((widthTexture-neigh4.x)/widthTexture, (heightTexture-neigh4.z)/heightTexture));
         neigh4.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -61,7 +61,7 @@ void main()
     //Top-left: 0,5
     else if(position.x==0 && position.z==heightTexture){
         //0th
-        neigh0 = vec3(position.x, 0, position.z-1);
+        neigh0 = vec3(position.x, 0, position.z+1);
         vec4 color = texture(rgbTexture, vec2((widthTexture-neigh0.x)/widthTexture, (heightTexture-neigh0.z)/heightTexture));
         neigh0.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -77,13 +77,13 @@ void main()
     //Top-right: 0,1,2
     else if(position.x==widthTexture && position.z==heightTexture){
         //0th
-        neigh0 = vec3(position.x, 0, position.z-1);
+        neigh0 = vec3(position.x, 0, position.z+1);
         vec4 color = texture(rgbTexture, vec2((widthTexture-neigh0.x)/widthTexture, (heightTexture-neigh0.z)/heightTexture));
         neigh0.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //1th
         neigh1.x=position.x-1;
-        neigh1.z=position.z-1;
+        neigh1.z=position.z+1;
         color = texture(rgbTexture, vec2((widthTexture-neigh1.x)/widthTexture, (heightTexture-neigh1.z)/heightTexture));
         neigh1.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -109,7 +109,7 @@ void main()
 
         //3th
         neigh3.x=position.x;
-        neigh3.z=position.z+1;
+        neigh3.z=position.z-1;
         color = texture(rgbTexture, vec2((widthTexture-neigh3.x)/widthTexture, (heightTexture-neigh3.z)/heightTexture));
         neigh3.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -118,13 +118,13 @@ void main()
     }
     else{
         //0th
-        neigh0 = vec3(position.x, 0, position.z-1);
+        neigh0 = vec3(position.x, 0, position.z+1);
         color = texture(rgbTexture, vec2((widthTexture-neigh0.x)/widthTexture, (heightTexture-neigh0.z)/heightTexture));
         neigh0.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //1th
         neigh1.x=position.x-1;
-        neigh1.z=position.z-1;
+        neigh1.z=position.z+1;
         color = texture(rgbTexture, vec2((widthTexture-neigh1.x)/widthTexture, (heightTexture-neigh1.z)/heightTexture));
         neigh1.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -136,13 +136,13 @@ void main()
 
         //3th
         neigh3.x=position.x;
-        neigh3.z=position.z+1;
+        neigh3.z=position.z-1;
         color = texture(rgbTexture, vec2((widthTexture-neigh3.x)/widthTexture, (heightTexture-neigh3.z)/heightTexture));
         neigh3.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
         //4th
         neigh4.x=position.x+1;
-        neigh4.z=position.z+1;
+        neigh4.z=position.z-1;
         color = texture(rgbTexture, vec2((widthTexture-neigh4.x)/widthTexture, (heightTexture-neigh4.z)/heightTexture));
         neigh4.y=heightFactor*(0.2126*color.r + 0.7152*color.g + 0.0722*color.b);
 
@@ -162,13 +162,14 @@ void main()
         vertexNormal=(normal0+normal1+normal2+normal3+normal4+normal5)/6;
     }
     // compute toLight vector vertex coordinate in VCS
-    ToLightVector = vec3 (widthTexture / 2 - position.x, widthTexture + heightTexture - y, heightTexture / 2 - position.z);
+    ToLightVector = normalize(vec3 (widthTexture / 2 - position.x, widthTexture + heightTexture - y, heightTexture / 2 - position.z));
 
     // compute toCamera vector vertex coordinate in VCS
-    ToCameraVector = vec3 (cameraPosition.x - position.x, cameraPosition.y - y, cameraPosition.z - position.z);
+    ToCameraVector = normalize(vec3 (cameraPosition.x - position.x, cameraPosition.y - y, cameraPosition.z - position.z));
 
    // set gl_Position variable correctly to give the transformed vertex position
 
+   vertexNormal = normalize(vertexNormal);
    gl_Position = MVP * vec4(position.x, y, position.z, 1);
 
 }
