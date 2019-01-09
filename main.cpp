@@ -22,8 +22,10 @@ GLuint idMVPMatrix;
 int widthTexture, heightTexture;
 
 // Uniform variable
+float speed=0;
 float heightFactor=10.0;
 vec4 cameraPosition;
+vec4 gaze;
 
 static void errorCallback(int error,
   const char * description) {
@@ -127,8 +129,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         break;
       /*U, J for speed*/
       case GLFW_KEY_U:
+        if(action == GLFW_PRESS)
+          speed+=0.25;
         break;
       case GLFW_KEY_J:
+        if(action == GLFW_PRESS && speed>=0.25)
+          speed-=0.25;
         break;
       /*F for fullscreen*/
       case GLFW_KEY_F:
@@ -188,6 +194,8 @@ int main(int argc, char * argv[]) {
   initTexture(argv[1], & widthTexture, & heightTexture);
 
   cameraPosition = vec4((float)widthTexture / 2, (float)widthTexture / 10, - (float)widthTexture / 4, 1.0f);
+  gaze = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
 
   glUniform4fv(glGetUniformLocation(idProgramShader, "cameraPosition"), 1, value_ptr(cameraPosition));
   glUniform1f(glGetUniformLocation(idProgramShader, "heightFactor"), heightFactor);
@@ -225,9 +233,9 @@ int main(int argc, char * argv[]) {
 
     mat4 proj = perspective(radians(57.5f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
-
-    //From camera look at the center of the texture with up vector in the direction of y
-    mat4 view = lookAt(vec3(cameraPosition), vec3(cameraPosition.x,cameraPosition.y,cameraPosition.z+1), vec3(0.0f, 1.0f, 0.0f));
+    cameraPosition+=gaze*speed;
+    //From camera look in the direction of gaze vector with up vector in the direction of y
+    mat4 view = lookAt(vec3(cameraPosition), vec3(cameraPosition+gaze), vec3(0.0f, 1.0f, 0.0f));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     mat4 mvp = proj * view;
@@ -241,7 +249,3 @@ int main(int argc, char * argv[]) {
   glfwTerminate();
   return 0;
 }
-//glfwGetWindowPos
-//When the window size has changed, then the viewport has to be suited to the window size (glViewport). This can be done in the main loop of the application:
-//If the current window is in full screen mode, can be achieved by asking for the monitor that the window uses for full screen mode (glfwGetWindowMonitor):
-//To switch the full screen mode on and off, glfwSetWindowMonitor has to be called, either with the monitor for the full screen mode, or with nullptr:
