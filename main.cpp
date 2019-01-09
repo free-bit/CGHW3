@@ -186,17 +186,17 @@ int main(int argc, char * argv[]) {
   glGenBuffers(1, &EBO);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, (widthTexture+1)*(heightTexture+1)*3*sizeof(float), vertices, GL_STATIC_DRAW);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, widthTexture*heightTexture*6*sizeof(float), indices, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-  //delete [] vertices;
-  //delete [] indices;
+  delete [] vertices;
+  delete [] indices;
 
   while (!glfwWindowShouldClose(win)) {
     float ratio;
@@ -204,7 +204,7 @@ int main(int argc, char * argv[]) {
     glfwGetFramebufferSize(win, &width, &height);
     ratio = width / (float) height;
 
-    mat4 proj = perspective(radians(45.0f), ratio, 0.1f, 1000.0f);
+    mat4 proj = perspective(radians(90.0f), ratio, 0.1f, 1000.0f);
     glViewport(0, 0, width, height);
 
     //From camera look at the center of the texture with up vector in the direction of y
